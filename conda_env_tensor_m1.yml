@@ -1,0 +1,19 @@
+# Environment for using tensorflow on M1 mac
+# conda env create -f conda_env_tensor_m1.yml
+name: tensor_m1
+channels:
+  - conda-forge
+  - apple
+  - default
+dependencies:
+  - python=3.10
+  - ipykernel
+  - tensorflow-deps
+  - matplotlib
+  - numpy
+  - scipy
+  - keras
+  - pip
+  - pip:
+    - tensorflow-macos
+    - tensorflow-metal
