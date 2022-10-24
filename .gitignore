@@ -1,6 +1,9 @@
 # ignore uncompressed csv
 data/*.csv
 
+# ignore local tests
+test/
+
 # macOS
 .DS_Store
 
