@@ -1,3 +1,6 @@
+# ignore uncompressed csv
+data/*.csv
+
 # macOS
 .DS_Store
 
