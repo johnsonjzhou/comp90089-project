@@ -25,9 +25,6 @@ def validate_dataset(df:DataFrame):
         # Group identifier
         g = group[["subject_id", "hadm_id"]].values.tolist()
         
-        # Test for number of records per group
-        assert len(group) == 1, f"Group: {g}, length is {len(group)}"
-        
         # Test for NA values
         na_cols = group[group.columns[group.isna().any()]].columns.values
         assert len(na_cols) == 0, f"Group: {g}, NA present in columns: {na_cols}"
@@ -37,6 +34,10 @@ def validate_dataset(df:DataFrame):
             u = group[col].unique()
             assert len(u) == 1, \
                 f"Group: {g}, col {col} has >= 1 unique values, being {u}"
+        
+        # Test for number of records per group
+        assert len(group) == 1, f"Group: {g}, length is {len(group)}"
+        
         return
     
     try:
