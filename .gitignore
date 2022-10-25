@@ -1,5 +1,5 @@
 # ignore uncompressed csv
-data/*.csv
+# data/*.csv
 
 # ignore local tests
 test/
