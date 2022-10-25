@@ -4,7 +4,30 @@
 import logging
 
 import pandas as pd
-from pandas import DataFrame, Series
+from pandas import DataFrame
+
+def assert_group_identical(group:DataFrame) -> DataFrame:
+    """
+    Asserts that all rows are identical by checking columns only contain
+    no more than one unique value
+    
+    Args:
+        group (DataFrame)
+    
+    Returns(DataFrame)
+    
+    Throws(AssertionError)
+    """
+    # Group identifier
+    g = group[["subject_id", "hadm_id"]].values.tolist()
+    
+    # Test for number of unique values in each column
+    for col in group:
+        u = group[col].unique()
+        assert len(u) == 1, \
+            f"Group: {g}, col {col} has >= 1 unique values, being {u}"
+    
+    return
 
 def validate_dataset(df:DataFrame):
     """
@@ -21,7 +44,7 @@ def validate_dataset(df:DataFrame):
     logging.basicConfig(level=logging.DEBUG)
     logging.basicConfig(format="%(levelname)s-%(message)s")
     
-    def group_assertions(group:Series):
+    def group_assertions(group:DataFrame) -> DataFrame:
         # Group identifier
         g = group[["subject_id", "hadm_id"]].values.tolist()
         
