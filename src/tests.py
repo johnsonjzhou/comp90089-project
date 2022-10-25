@@ -23,6 +23,8 @@ def assert_group_identical(group:DataFrame) -> DataFrame:
     
     # Test for number of unique values in each column
     for col in group:
+        if col == "stay_id":
+            continue
         u = group[col].unique()
         assert len(u) == 1, \
             f"Group: {g}, col {col} has >= 1 unique values, being {u}"
@@ -54,6 +56,8 @@ def validate_dataset(df:DataFrame):
         
         # Test for number of unique values in each column
         for col in group:
+            if col == "stay_id":
+                continue
             u = group[col].unique()
             assert len(u) == 1, \
                 f"Group: {g}, col {col} has >= 1 unique values, being {u}"
