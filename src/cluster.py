@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt
 from pandas import DataFrame
 import matplotlib.cm as cm
 import numpy as np
+import pandas as pd
 
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score, silhouette_samples
+
+from sklearn.neighbors import BallTree
+from sklearn.cluster import DBSCAN
 
 def fit_kmeans(args:list) -> tuple[int, KMeans]:
     """
@@ -88,7 +92,7 @@ def k_means_elbow_analysis(k_list:list, df, title):
     ax.plot(analysis_df["k"], analysis_df["sse_w"], color="blue")
     ax.set_ylabel("SSEw")
     ax.tick_params(axis="y", labelcolor="blue")
-    ax.axvspan(xmin=3, xmax=5, ymin=0, ymax=1, alpha=0.2, color="orange")
+    # ax.axvspan(xmin=3, xmax=5, ymin=0, ymax=1, alpha=0.2, color="orange")
 
     ax2 = ax.twinx()
     ax2.plot(analysis_df["k"], analysis_df["silhouette"], color="green")
@@ -177,3 +181,108 @@ def silhouette_analysis(range_k:list, df, title:str):
 
     plt.show()
     return
+
+def calculate_k_distances(args):
+    """
+    Calculate k-distances using euclidean distance with the BallTree algorithm
+    
+    Args(tuple):
+        k (int)
+        df (DataFrame)
+    
+    Returns(array): k-distances in descending order of shape n_instances
+    """
+    # Unpack args
+    k, df = args
+    
+    # BallTree is efficient algorithm defaults to euclidean distance
+    # Generate the distance to the k-th nearest neighbour
+    tree = BallTree(df)
+    distances, _ = tree.query(df, k=k)
+    
+    # Sort the distances in descending order
+    k_distances = np.sort(distances[:,-1])[::-1]
+    
+    return k_distances
+
+def dbscan_kdist_analysis(args:tuple):
+    """
+    Explores k-distances for dbscan across a range of k values and plots
+    the results on a k-distances graph
+    
+    Args(tuple)
+        k_list (list of int): values of k to explore
+        df (DataFrame)
+    """
+    # Unpack the args
+    k_list, df = args
+    
+    # Create the plot
+    plt.style.use("default")
+    fig, ax = plt.subplots()
+
+    for k in k_list:
+        # Calculate the k_distances
+        k_dist = calculate_k_distances(args=(k, df))
+
+        # Add to the plot
+        ax.plot(df.index, k_dist, label=f"k={k}")
+        
+    plt.title(f"K-Distances")
+    plt.xlabel("Instances")
+    plt.ylabel("k-distance")
+    plt.legend()
+    plt.show()
+
+def assign_dbscan_multidensity(args:tuple):
+    """
+    Uses DBSCAN to assign clusters across a range of eps distances to
+    handle multiple densities. Clusters are assigned iteratively from most dense
+    to least dense and each run only works with points that are unassigned or
+    considered as outlier from the previous run.
+    
+    Args(tuple):
+        eps_list (list): a list of eps distances to use
+        min_pts (int): the min_samples parameter of DBSCAN
+        df (DataFrame)
+    
+    Returns(DataFrame): of cluster assignments
+    """
+    # Unpack the args
+    eps_list, min_pts, df = args
+    
+    df["cluster"] = np.nan
+    
+    for i, eps in enumerate(np.sort(eps_list)):
+        # Initiate DBSCAN
+        dbscan = DBSCAN(eps=eps, min_samples=min_pts, n_jobs=-1)
+        
+        # Select only the instances where cluster is NA or -1 (outlier)
+        df_run = df[(df["cluster"].isna() | (df["cluster"] < 0))]
+        
+        # Skip if no more rows to apply for this run
+        if df_run.shape[0] < 1:
+            continue
+        print(f"DBSCAN run:{i} eps:{eps} n:{df_run.shape[0]}")
+        
+        # Run DBSCAN to fit the labels
+        x = df_run.drop(columns=["cluster"])
+        df_run["dbscan"] = dbscan.fit_predict(x)
+        
+        # Apply a modifier to the labels to distinguish between runs
+        # run 1: 1xxx, run 2: 2xxx, etc..
+        df_run["dbscan"] = df_run["dbscan"] \
+            .apply(lambda x: (x, x + (1000 * (i + 1)))[x >= 0])
+        
+        # Join the results to the original DataFrame
+        df_run = df_run[["dbscan"]]
+        df = pd.merge(left=df, right=df_run, how="left", on="ID")
+        
+        # Assign cluster based on dbscan assignments
+        df.loc[df["dbscan"].notna(), "cluster"] = df["dbscan"]
+        
+        # Clean up after run
+        df = df.drop(columns=["dbscan"])
+    
+    assigned_clusters = df["cluster"]
+    return assigned_clusters
