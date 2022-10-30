@@ -43,7 +43,7 @@ def validate_dataset(df:DataFrame):
     
     Returns(bool): True if all tests pass
     """
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.basicConfig(format="%(levelname)s-%(message)s")
     
     def group_assertions(group:DataFrame) -> DataFrame:
