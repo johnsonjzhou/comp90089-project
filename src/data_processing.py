@@ -180,3 +180,28 @@ def plot_df_histogram(df, title:str, figsize:tuple=(10,4), across:int = 4, **kwa
     plt.tight_layout()
     plt.show()
     return
+
+def calculate_feature_correlation(df:DataFrame):
+    """
+    Compare features and calculate pearson correlation, return the absolute
+    pearson coefficient and the signed direction
+    
+    Args:
+        df(DataFrame)
+    
+    Returns(DataFrame)
+    """
+    # Calculate the correlation matrix
+    corr_matrix = df.corr()
+    # Wrangle into easy to read format
+    # We want absolute pearson coefficient and direction [-1, 1]
+    df_corr = DataFrame(corr_matrix.unstack(), columns=["pearson"])
+    df_corr.index.names = ["X1", "X2"]
+    df_corr = df_corr.reset_index().dropna()
+    df_corr["pearson_abs"] = df_corr["pearson"].abs()
+    df_corr["pearson_dir"] = df_corr["pearson_abs"] / df_corr["pearson"]
+    df_corr = df_corr.drop(columns=["pearson"])
+    # Ignore self correlations and sort descending
+    df_corr = df_corr.loc[(df_corr["X1"] != df_corr["X2"])] \
+        .sort_values(by="pearson_abs", ascending=False)
+    return df_corr
