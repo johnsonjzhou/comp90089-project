@@ -234,6 +234,38 @@ def dbscan_kdist_analysis(args:tuple):
     plt.legend()
     plt.show()
 
+def dbscan_kdist_analysis_zoom(args:tuple):
+    """
+    Explores k-distances for dbscan across a range of k values and plots
+    the results on a k-distances graph
+    
+    Args(tuple)
+        k_list (list of int): values of k to explore
+        df (DataFrame)
+        xlim (int): x-scale limit
+    """
+    # Unpack the args
+    k_list, df, xlim, ylim = args
+    
+    # Create the plot
+    plt.style.use("default")
+    fig, ax = plt.subplots()
+    ax.set_xlim(right=xlim)
+    ax.set_ylim(top=ylim)
+
+    for k in k_list:
+        # Calculate the k_distances
+        k_dist = calculate_k_distances(args=(k, df))
+
+        # Add to the plot
+        ax.plot(df.index, k_dist, label=f"k={k}")
+        
+    plt.title(f"K-Distances")
+    plt.xlabel("Instances")
+    plt.ylabel("k-distance")
+    plt.legend()
+    plt.show()
+
 def assign_dbscan_multidensity(args:tuple):
     """
     Uses DBSCAN to assign clusters across a range of eps distances to
