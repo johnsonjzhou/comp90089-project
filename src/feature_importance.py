@@ -26,7 +26,7 @@ def forestFit(X,y):
     # split our dataset into training and testing subsets.
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
 
-    feature_names = [f"feature {i}" for i in range(X.shape[1])]
+    feature_names = [f"{x}" for x in X.columns]
     forest = RandomForestClassifier(random_state=0)
     forest.fit(X_train, y_train)
     return feature_names, forest, X_test, y_test
@@ -44,9 +44,9 @@ def LinearRegressionFit(X,y):
         lr: the fitted fLinear Regression model
     """
     # split our dataset into training and testing subsets.
-    X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
 
-    feature_names = [f"{x}" for x in X.title()]
+    feature_names = [f"{x}" for x in X.columns]
     lr = LinearRegression()
     lr.fit(X_train, y_train)
     return feature_names, lr, X_test, y_test
@@ -59,8 +59,6 @@ def impurityPlot(feature_names,model):
         Args:
             feature_names: all feature included
             model: fitted estimator 
-            X_test: testing dataset
-            y_test: labels of testing data (LoS)
     """
     importances = model.feature_importances_
 
