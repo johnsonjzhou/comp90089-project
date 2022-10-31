@@ -46,7 +46,7 @@ def LinearRegressionFit(X,y):
     # split our dataset into training and testing subsets.
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=42)
 
-    feature_names = [f"feature {i}" for i in range(X.shape[1])]
+    feature_names = [f"{x}" for x in X.title()]
     lr = LinearRegression()
     lr.fit(X_train, y_train)
     return feature_names, lr, X_test, y_test
@@ -71,11 +71,10 @@ def impurityPlot(feature_names,model):
 
     fig, ax = plt.subplots()
     fig.set_figheight(15)
-    fig.set_figwidth(15)
+    fig.set_figwidth(45)
     forest_importances.plot.bar(yerr=std, ax=ax)
     ax.set_title("-- Feature importances using MDI --")
     ax.set_ylabel("Mean decrease in impurity")
-    # fig.tight_layout()
 
 def permutationPlot(feature_names, model, X_test, y_test):
     """
@@ -93,8 +92,9 @@ def permutationPlot(feature_names, model, X_test, y_test):
     forest_importances = pd.Series(result.importances_mean, index=feature_names)
 
     fig, ax = plt.subplots()
+    fig.set_figheight(15)
+    fig.set_figwidth(45)
     forest_importances.plot.bar(yerr=result.importances_std, ax=ax)
-    ax.set_title("Feature importances using permutation on full model")
+    ax.set_title("-- Feature importances using permutation on full model --")
     ax.set_ylabel("Mean accuracy decrease")
-    fig.tight_layout()
     plt.show()
