@@ -1,6 +1,8 @@
 ################################################################################
 # Helper functions for feature Importantance Analysis
+# sources: https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py
 ################################################################################
+from os import access
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import numpy as np
@@ -68,10 +70,12 @@ def impurityPlot(feature_names,model):
     forest_importances = pd.Series(importances, index=feature_names)
 
     fig, ax = plt.subplots()
+    fig.set_figheight(15)
+    fig.set_figwidth(15)
     forest_importances.plot.bar(yerr=std, ax=ax)
-    ax.set_title("Feature importances using MDI")
+    ax.set_title("-- Feature importances using MDI --")
     ax.set_ylabel("Mean decrease in impurity")
-    fig.tight_layout()
+    # fig.tight_layout()
 
 def permutationPlot(feature_names, model, X_test, y_test):
     """
