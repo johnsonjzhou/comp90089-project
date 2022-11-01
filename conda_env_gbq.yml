@@ -12,6 +12,7 @@ dependencies:
   - ipykernel
   - ipywidgets
   - pandas
+  - pandasql
   - matplotlib
   - numpy
   - libblas=*=*accelerate
