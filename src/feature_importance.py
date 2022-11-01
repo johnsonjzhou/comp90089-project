@@ -71,7 +71,7 @@ def impurityPlot(feature_names,model):
     fig.set_figheight(15)
     fig.set_figwidth(45)
     forest_importances.plot.bar(yerr=std, ax=ax)
-    ax.set_title("-- Feature importances using MDI --")
+    ax.set_title(f" {model} Feature importances using MDI ")
     ax.set_ylabel("Mean decrease in impurity")
 
 def permutationPlot(feature_names, model, X_test, y_test):
@@ -93,6 +93,6 @@ def permutationPlot(feature_names, model, X_test, y_test):
     fig.set_figheight(15)
     fig.set_figwidth(45)
     forest_importances.plot.bar(yerr=result.importances_std, ax=ax)
-    ax.set_title("-- Feature importances using permutation on full model --")
+    ax.set_title(f"{model} Feature importances using permutation on full model --")
     ax.set_ylabel("Mean accuracy decrease")
     plt.show()
