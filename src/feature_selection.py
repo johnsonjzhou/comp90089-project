@@ -44,7 +44,7 @@ def analyse_pca(df, percent_exp_variance=90):
     # Plot the analysis
     x = range(1, max_components + 1)
     ax = sns.lineplot(x=x, y=np.cumsum(pca_analyse.explained_variance_ratio_))
-    ax.set_xticks(x)
+    # ax.set_xticks(x)
     ax.set_xlabel("Number of components")
     ax.set_ylabel("Explained variance ratio (cumulative)")
     plt.axhline(y=(percent_exp_variance / 100), color="red", linestyle="--")
