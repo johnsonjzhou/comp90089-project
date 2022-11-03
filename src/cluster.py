@@ -243,9 +243,11 @@ def dbscan_kdist_analysis_zoom(args:tuple):
         k_list (list of int): values of k to explore
         df (DataFrame)
         xlim (int): x-scale limit
+        ylim (int): y-scale limit
+        title (str): title for the plot
     """
     # Unpack the args
-    k_list, df, xlim, ylim = args
+    k_list, df, xlim, ylim, title = args
     
     # Create the plot
     plt.style.use("default")
@@ -260,7 +262,7 @@ def dbscan_kdist_analysis_zoom(args:tuple):
         # Add to the plot
         ax.plot(df.index, k_dist, label=f"k={k}")
         
-    plt.title(f"K-Distances")
+    plt.title(title, fontweight="bold")
     plt.xlabel("Instances")
     plt.ylabel("k-distance")
     plt.legend()
