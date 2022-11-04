@@ -148,7 +148,7 @@ def plot_cohort_statistics(df, title:str, figsize=(10,10), across:int=4):
     fig, axs = plt.subplots(row, col)
     fig.set_size_inches(width, height)
     fig.suptitle(title, fontweight="semibold", y=1.0)
-    fig.tight_layout()
+    fig.tight_layout(w_pad=2)
     
     df_plt = df.copy()
 
