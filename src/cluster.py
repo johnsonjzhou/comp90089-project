@@ -92,7 +92,7 @@ def k_means_elbow_analysis(k_list:list, df, title):
     ax.plot(analysis_df["k"], analysis_df["sse_w"], color="blue")
     ax.set_ylabel("SSEw")
     ax.tick_params(axis="y", labelcolor="blue")
-    # ax.axvspan(xmin=3, xmax=5, ymin=0, ymax=1, alpha=0.2, color="orange")
+    ax.axvspan(xmin=3, xmax=5, ymin=0, ymax=1, alpha=0.2, color="orange")
 
     ax2 = ax.twinx()
     ax2.plot(analysis_df["k"], analysis_df["silhouette"], color="green")
@@ -243,9 +243,11 @@ def dbscan_kdist_analysis_zoom(args:tuple):
         k_list (list of int): values of k to explore
         df (DataFrame)
         xlim (int): x-scale limit
+        ylim (int): y-scale limit
+        title (str): title for the plot
     """
     # Unpack the args
-    k_list, df, xlim, ylim = args
+    k_list, df, xlim, ylim, title = args
     
     # Create the plot
     plt.style.use("default")
@@ -260,7 +262,7 @@ def dbscan_kdist_analysis_zoom(args:tuple):
         # Add to the plot
         ax.plot(df.index, k_dist, label=f"k={k}")
         
-    plt.title(f"K-Distances")
+    plt.title(title, fontweight="bold")
     plt.xlabel("Instances")
     plt.ylabel("k-distance")
     plt.legend()
